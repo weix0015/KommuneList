@@ -6,7 +6,7 @@ const URLRegioner = "http://localhost:8080/getregioner";
 function setUpHandlers() {
   document.getElementById("kommune-table-body").onclick = handleTableClick
   document.getElementById("btn-save").onclick = saveKommune
-  document.getElementById("btn-add-kommune").onclick = makeNewKommune
+  //document.getElementById("btn-add-kommune").onclick = makeNewKommune
 }
 setUpHandlers()
 
@@ -14,7 +14,7 @@ setUpHandlers()
 async function fetchRegioner() {
   try {
     regioner = await fetch(URLRegioner)
-      .then(handleHttpErrors)
+        .then(handleHttpErrors)
     console.log(regioner)
   } catch (err) {
     if (err.apiError) {
@@ -41,16 +41,14 @@ function makeRows() {
         `)
   document.getElementById("kommune-table-body").innerHTML = rows.join("")
 }
-
+//Kommuner
 fetchRegioner()
 fetchKommuner()
-
-//Kommuner
 async function fetchKommuner() {
 
   try {
     kommuner = await fetch(URLkommuner)
-      .then(handleHttpErrors)
+        .then(handleHttpErrors)
     console.log(kommuner)
   } catch (err) {
     if (err.apiError) {
@@ -62,39 +60,35 @@ async function fetchKommuner() {
 
   makeRows()
 }
-
+//Edit & Delete
 function handleTableClick(evt) {
   evt.preventDefault()
   evt.stopPropagation()
   const target = evt.target;
 
   if (target.dataset.idDelete) {
-
     const idToDelete = Number(target.dataset.idDelete)
-
 
     const options = makeOptions("DELETE")
     fetch(`${URLkommuner}/${idToDelete}`, options)
-      .then(handleHttpErrors)
-      .catch( err => {
-        if (err.apiError) {
-          console.error("Full API error: ", err.apiError)
-        } else {
-          console.error(err.message)
-        }
-      })
+        .then(handleHttpErrors)
+        .catch(err =>{
+          if (err.apiError){
+            console.error("Full API error: ", err.apiError)
 
-
+          }else{
+            console.error(err.message)
+          }
+        })
     kommuner = kommuner.filter(s => s.id !== idToDelete)
 
     makeRows()
   }
 
-
   if (target.dataset.idEdit){
     const idToEdit = Number(target.dataset.idEdit)
-    const kommune = kommuner.find(s => s.id === idToEdit)
-    showModal(kommune)
+    const kommuner = kommuner.find(s => s.id === idToEdit)
+    showModal(kommuner)
   }
 }
 
@@ -109,48 +103,48 @@ async function handleHttpErrors(res) {
   }
   return res.json()
 }
+//Modal
 
 function showModal(kommune) {
   const myModal = new bootstrap.Modal(document.getElementById('kommune-modal'))
-  document.getElementById("modal-title").innerText = kommune.kode ? "Edit Kommune" : "Add Kommune"
-  document.getElementById("kommune-kode").innerText = kommune.kode
-  document.getElementById("input-name").value = kommune.navn
+  document.getElementById("modal-title").innerText = kommuner.id ? "Edit Kommuner" : "Add Kommuner"
+  document.getElementById("kommuneKode").innerText = kommuner.id
+  document.getElementById("kommune-navn").value = kommuner.name
+
   myModal.show()
 }
-
+//Kommune
 async function saveKommune() {
   let kommuner = {}
   kommuner.kode = Number(document.getElementById("input-kode").innerText)
   kommuner.navn = document.getElementById("input-navn").value
   kommuner.region = document.getElementById("input-region").value
 
-  if (kommuner.id) {
-    const options = makeOptions("PUT", kommuner)
+  if (kommuner.kode){
+    const options = makeOptions("PUT",kommuner)
     try {
-      kommuner = await fetch(`${URLkommuner}/${kommuner.id}`, options)
-        .then(handleHttpErrors)
-    } catch (err) {
+      kommuner = await fetch(`${URLkommuner}/${kommuner.kode}`,options)
+          .then(handleHttpErrors)
+    }catch (err){
       if (err.apiError){
         console.error("Full API error: ", err.apiError)
-      } else {
+      }else {
         console.error(err.message)
       }
-
     }
-
-    kommuner = kommuner.map(k => (k.kode === kommuner.kode) ? kommuner : k)
+    kommuner = kommuner.map(s => (k.kode === kommuner.kode) ? kommuner : s)
   } else {
-    const options = makeOptions("POST", kommuner)
+    const options = makeOptions("POST",kommuner)
     try {
-      kommuner = await fetch(URLkommuner, options)
-        .then(handleHttpErrors)
-    } catch (err) {
-      if (err.apiError){
-        console.error("Full API error: ", err.apiError)
-      }   else {
-        console.error(err.message)
-      }
+      kommuner = await fetch(URLkommuner,options)
+          .then(handleHttpErrors)
 
+    } catch (err){
+      if (err.apiError){
+        console.log("Full API error: ", err.apiError)
+      }else {
+        console.log(err.message)
+      }
     }
     kommuner.push(kommuner)
   }
