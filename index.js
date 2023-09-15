@@ -82,14 +82,14 @@ function handleTableClick(evt) {
             console.error(err.message)
           }
         })
-    kommuner = kommuner.filter(s => s.id !== idToDelete)
+    kommuner = kommuner.filter(k => k.id !== idToDelete)
 
     makeRows()
   }
 
   if (target.dataset.idEdit){
     const idToEdit = Number(target.dataset.idEdit)
-    const kommuner = kommuner.find(s => s.id === idToEdit)
+    kommuner = kommuner.find(k => k.id === idToEdit)
     showModal(kommuner)
   }
 }
@@ -134,7 +134,7 @@ async function saveKommune() {
         console.error(err.message)
       }
     }
-    kommuner = kommuner.map(s => (k.kode === kommuner.kode) ? kommuner : s)
+    kommuner = kommuner.map(k => (k.kode === kommuner.kode) ? kommuner : k)
   } else {
     const options = makeOptions("POST",kommuner)
     try {
