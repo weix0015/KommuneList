@@ -1,3 +1,5 @@
+let kommuner = [];
+
 const URLkommuner = "http://localhost:8080/getkommuner";
 //const URLkommune  = `http://localhost:8080/kommune/${region}`;
 const URLRegioner = "http://localhost:8080/getregioner";
