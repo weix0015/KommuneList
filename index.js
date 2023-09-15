@@ -1,14 +1,14 @@
 let kommuner = [];
 
 const URLkommuner = "http://localhost:8080/getkommuner";
-//const URLkommune  = `http://localhost:8080/kommune/${region}`;
+const URLkommune  = `http://localhost:8080/kommune/${region}`;
 const URLRegioner = "http://localhost:8080/getregioner";
 
 //Handlers
 function setUpHandlers() {
   document.getElementById("kommune-table-body").onclick = handleTableClick
   document.getElementById("btn-save").onclick = saveKommune
-  //document.getElementById("btn-add-kommune").onclick = makeNewKommune
+  document.getElementById("btn-add-kommune").onclick = makeNewKommune
 }
 setUpHandlers()
 
@@ -72,9 +72,9 @@ function handleTableClick(evt) {
     const idToDelete = Number(target.dataset.idDelete)
 
     const options = makeOptions("DELETE")
-    fetch(`${URLkommuner}/${idToDelete}`, options)
+    fetch(`${URLkommune}/${idToDelete}`, options)
         .then(handleHttpErrors)
-        .catch(err =>{
+        .catch(err => {
           if (err.apiError){
             console.error("Full API error: ", err.apiError)
 
@@ -109,12 +109,53 @@ async function handleHttpErrors(res) {
 
 function showModal(kommune) {
   const myModal = new bootstrap.Modal(document.getElementById('kommune-modal'))
-  document.getElementById("modal-title").innerText = kommuner.id ? "Edit Kommuner" : "Add Kommuner"
-  document.getElementById("kommuneKode").innerText = kommuner.id
-  document.getElementById("kommune-navn").value = kommuner.name
+  document.getElementById("modal-title").innerText = kommune.kode ? "Edit Kommuner" : "Add Kommuner"
+  document.getElementById("kommuneKode").innerText = kommune.kode
+  document.getElementById("kommune-navn").value = kommune.name
 
   myModal.show()
 }
+
+async function saveKommune() {
+  let kommune = {}
+  kommune.id = Number(document.getElementById("kommune-id").innerText)
+  student.name = document.getElementById("input-nave").value
+  student.region = document.getElementById("input-region").value
+
+  if (kommune.id){ //Edit
+    //apiStudentPut(student)
+    const options = makeOptions("PUT", kommune)
+    try {
+      kommune = await fetch(`${URLkommune}/${kommune.id}`, options)
+          .then(handleHttpErrors)
+    } catch (err) {
+      if (err.apiError){
+        console.error("Full API error: ", err.apiError)
+      } else {
+        console.error(err.message)
+      }
+    }
+    kommuner = kommuner.map(k => (k.id === kommune.id) ? kommune : k)
+  } else {
+    const options = makeOptions("POST", kommune)
+    try {
+      kommune = await fetch(URLkommuner, options)
+          .then(handleHttpErrors)
+    } catch (err) {
+      if (err.apiError){
+        console.error("Full API error: ", err.apiError)
+      }   else {
+        console.error(err.message)
+      }
+
+    }
+    kommuner.push(kommune)
+  }
+
+  makeRows()
+}
+
+
 //Kommune
 async function saveKommune() {
   let kommuner = {}
