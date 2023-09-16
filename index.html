@@ -39,33 +39,40 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <p >Kommune Kode: <span id="kommune-id"></span></p>
-                <form>
+                <form id="kommuneForm" class="needs-validation" novalidate>
                     <div class="mb-3">
                         <label for="input-kode" class="form-label">Kode</label>
-                        <input type="text" class="form-control" id="input-kode">
+                        <input type="text" class="form-control" id="input-kode" required>
+                        <div class="invalid-feedback">
+                            Please provide valid kode.
+                        </div>
                     </div>
                     <div class="mb-3">
-                        <label for="input-name" class="form-label">Navn</label>
-                        <input type="text" class="form-control" id="input-name">
+                        <label for="input-navn" class="form-label">Navn</label>
+                        <input type="text" class="form-control" id="input-navn" required>
+                        <div class="invalid-feedback">
+                            Please provide valid name.
+                        </div>
                     </div>
                     <div class="mb-3">
                         <label for="input-region" class="form-label">Region</label>
-                        <select id="input-region" class="form-select">
-                            <option selected>Choose...</option>
+                        <select class="form-select" id="input-region" required>
+                            <option value="" selected disabled>Choose...</option>
                             <option value="1081">Region Nordjylland</option>
                             <option value="1082">Region Midtjylland</option>
                             <option value="1083">Region Syddanmark</option>
                             <option value="1084">Region Hovedstaden</option>
                             <option value="1085">Region Sjælland</option>
                         </select>
+                        <div class="invalid-feedback">
+                            Please select valid region.
+                        </div>
                     </div>
                 </form>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">cancel</button>
-                <button id="btn-save" type="button" class="btn btn-primary" data-bs-dismiss="modal">Save changes
-                </button>
+                <button class="btn btn-secondary" data-bs-dismiss="modal">cancel</button>
+                <button id="btn-save" class="btn btn-primary" type="submit">Save changes</button>
             </div>
         </div>
     </div>
